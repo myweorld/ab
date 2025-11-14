@@ -1,0 +1,545 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TAKI-MITSUHA | Agar.live Modded by Taki and Mitsuha</title>
+    <meta name="google" content="notranslate" />
+    <meta name="content-language" content="en-US" />
+    <meta name="language" content="en-US" />
+    <meta name="robots" content="all" />
+    <link
+      rel="stylesheet"
+      href="static/css/styles.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <meta property="og:type" content="website" />
+    <!-- bundle.js is auto-injected by HtmlWebpackPlugin -->
+    <style>
+      #settingsModal {
+        z-index: 9999; /* En üstte olacak şekilde z-index değeri */
+      }
+      .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px white;
+        animation: move 10s linear infinite;
+      }
+
+      @keyframes move {
+        0% {
+          transform: translateY(0) translateX(0);
+        }
+        100% {
+          transform: translateY(100vh) translateX(100vw);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="fixed inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 z-50"
+      id="loadingOverlay"
+    >
+      <img
+        src="static/images/bg-image.jpg"
+        alt="Background"
+        class="absolute inset-0 w-full h-full object-cover z-0"
+      />
+      <div class="relative z-10 text-4xl text-white mb-4">
+        <div class="flex items-center justify-center">
+          <h1 class="text-5xl font-bold text-white tracking-widest">
+            TAKI-MITSUHA
+          </h1>
+        </div>
+      </div>
+      <div class="relative z-10 text-xl text-white">v1.0</div>
+      <div class="absolute inset-0 z-0">
+        <div id="stars"></div>
+      </div>
+    </div>
+    <div
+      id="main-login-section"
+      class="hidden main-login-section bg-gray-500 bg-opacity-25 h-screen flex justify-center items-center"
+    >
+      <div
+        class="relative flex bg-gray-500 p-4 items-center rounded-full border-4 border-black"
+      >
+        <!-- Settings Button -->
+        <div
+          onclick="openModal()"
+          class="flex items-center justify-center bg-gray-700 text-white p-4 rounded-l-full rounded-r-lg w-36 h-15 mr-28 cursor-pointer"
+        >
+          <div class="flex items-center space-x-2">
+            <span class="material-icons">settings</span>
+            <span class="font-bold text-sm">SETTINGS</span>
+          </div>
+        </div>
+
+        <!-- Circle (Bigger) -->
+        <div
+          class="absolute w-36 h-36 bg-green-500 rounded-full border-4 border-black z-10 left-36 cursor-pointer"
+        >
+          <img
+            id="defaultSkin"
+            src="https://agar.live/skins/noskin.png"
+            alt=""
+            class="items-center"
+          />
+        </div>
+
+        <!-- Play Button -->
+        <div
+          onclick="playGame()"
+          class="flex items-center justify-center bg-purple-500 text-white p-4 w-32 h-15 cursor-pointer"
+        >
+          <span class="material-icons">play_arrow</span>
+          <span class="font-bold text-sm">PLAY</span>
+        </div>
+
+        <!-- Spectate Button -->
+        <div
+          onclick="spectate()"
+          class="flex items-center justify-center bg-orange-500 text-white p-4 w-32 h-15 cursor-pointer"
+        >
+          <span class="material-icons">visibility</span>
+          <span class="font-bold text-sm">SPECTATE</span>
+        </div>
+
+        <select
+          class="flex items-center justify-center bg-gray-800 text-white w-34 h-15 outline-none border-none cursor-pointer"
+          style="padding: 18.5px"
+          id="gamemode"
+          onchange="setserver();"
+        >
+        <option maxlength="15" value="ffa1.agariodns.cyou" data-itr="FFA1" selected="true">Andromeda - EU</option>
+        <option maxlength="15" value="ffa2.agariodns.cyou" data-itr="FFA2">Cartwheel - USA</option>
+        <option maxlength="15" value="ffa3.agariodns.cyou" data-itr="FFA3">Sunflower - EU</option>
+        <option maxlength="15" value="ffa44.agariodns.cyou" data-itr="FFA4">Cigar - EU</option>
+        <option maxlength="15" value="pop1.agariodns.cyou" data-itr="FFA71">Milky - EU</option>
+        <option maxlength="15" value="pop2.agariodns.cyou" data-itr="FFA72">Whirlpool - EU</option>
+        <option maxlength="15" value="ffa4.agariodns.cyou" data-itr="FFA72">Cosmos - USA</option>
+        <option maxlength="15" value="ffa8.agariodns.cyou" data-itr="FFA8">Blackeye - USA</option>
+        <option maxlength="15" value="ffa9.agariodns.cyou" data-itr="FFA9">Hoags - USA</option>
+        <option maxlength="15" value="ffa10.agariodns.cyou" data-itr="FFA10">Comet - USA</option>
+        <option maxlength="15" value="rainbow.agariodns.cyou" data-itr="FFA7">RAINBOW - EU</option>
+        <option maxlength="16" value="instant.agariodns.cyou" data-itr="merge">INSTANT MERGE - EU</option>
+        <option maxlength="15" value="team.agariodns.cyou" data-itr="FFAT">TEAMS - EU </option>
+        <option maxlength="15" value="black.agariodns.cyou" data-itr="FFAB">BLACKHOLE - EU</option>
+        </select>
+        <!-- name -->
+        <div class="relative flex items-center">
+          <input
+            value="rurouni"
+            id="nick"
+            type="text"
+            placeholder="NAME..."
+            class="bg-gray-700 text-white p-4 rounded-r-full w-38 h-15 outline-none border-none pl-10"
+          />
+          <span class="material-icons absolute left-2 text-white">badge</span>
+        </div>
+      </div>
+
+      <!-- Settings Modal -->
+      <div
+        id="settingsModal"
+        class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center"
+      >
+        <div class="bg-black rounded-lg p-6 w-1/2">
+          <h2 class="text-xl font-bold mb-4 text-white">Settings</h2>
+
+          <!-- Tabs -->
+          <div class="flex border-b mb-4">
+            <button
+              class="tab-button px-4 py-2 text-white border-b-2 border-transparent focus:outline-none"
+              onclick="openTab(event, 'settings')"
+            >
+              Settings
+            </button>
+            <button
+              class="tab-button px-4 py-2 text-white border-b-2 border-transparent focus:outline-none"
+              onclick="openTab(event, 'controls')"
+            >
+              Controls
+            </button>
+            <button
+              class="tab-button px-4 py-2 text-white border-b-2 border-transparent focus:outline-none"
+              onclick="openTab(event, 'controls')"
+            >
+              Chat
+            </button>
+            <button
+              class="tab-button px-4 py-2 text-white border-b-2 border-transparent focus:outline-none"
+              onclick="openTab(event, 'controls')"
+            >
+              Theme
+            </button>
+            <button
+              class="tab-button px-4 py-2 text-white border-b-2 border-transparent focus:outline-none"
+              onclick="openTab(event, 'info')"
+            >
+              Info
+            </button>
+          </div>
+
+          <!-- Tab Contents -->
+          <div id="settings" class="tab-content">
+            <label class="flex items-center w-full">
+              <button
+                id="createButton"
+                onclick="handleHelpers()"
+                type="button"
+                class="w-full text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+              >
+                Full Map
+              </button>
+            </label>
+            <div class="grid grid-cols-2 gap-4 p-4">
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Rings</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="hsloRings"
+                    class="sr-only peer"
+                    onchange="setHsloRings()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Hide Skins</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="noSkin"
+                    class="sr-only peer"
+                    onchange="setHideSkins()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Hide Names</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="noNames"
+                    class="sr-only peer"
+                    onchange="setHideNames()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Dark Theme</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="darkTheme"
+                    class="sr-only peer"
+                    onchange="setDarkTheme()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Show Mass</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="showScore"
+                    class="sr-only peer"
+                    onchange="setShowScore()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Disable Zoom</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="getZoom"
+                    class="sr-only peer"
+                    onchange="setZoom()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >No Colors</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="noColor"
+                    class="sr-only peer"
+                    onchange="setNoColor()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Hide Chat</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="hideChat"
+                    class="sr-only peer"
+                    onchange="setHideChat()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Smooth Render</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="smoothRender"
+                    class="sr-only peer"
+                    onchange="setSmooth()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+              <div class="p-2 border border-gray-300 rounded-full text-white">
+                <label
+                  class="inline-flex items-center justify-between w-full cursor-pointer"
+                >
+                  <span
+                    class="text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Transparent</span
+                  >
+                  <input
+                    type="checkbox"
+                    id="transparentRender"
+                    class="sr-only peer"
+                    onchange="setTransparent()"
+                  />
+                  <div
+                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                  ></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div id="controls" class="tab-content hidden">
+            <p class="text-gray-800">Controls...</p>
+          </div>
+
+          <div id="info" class="tab-content hidden">
+            <p class="text-gray-800">Info...</p>
+          </div>
+          <div class="flex justify-end">
+            <button
+              class="mt-6 bg-gray-800 text-white px-4 py-2 rounded-md"
+              onclick="closeModal()"
+            >
+              Close Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="in-game" class="hidden in-game">
+      <canvas id="canvas" width="1454" height="991"></canvas>
+      <input
+        type="text"
+        id="chat_textbox"
+        maxlength="70"
+        placeholder="Press Enter to chat!"
+        style="
+          display: block;
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          margin: 15px;
+          background-color: transparent;
+        "
+      />
+      <div id="infoOverlays" style="visibility: hidden">
+        <div id="infoDialog">
+          <div class="match-result">Match Result</div>
+          <div class="grid-container">
+            <div class="grid-item">
+              <span id="stats_hightesmass" style="font-size: 10px">0</span>
+              <br />Food eaten
+            </div>
+            <div class="grid-item">
+              <span id="stats_hightesmass" style="font-size: 10px">0</span>
+              <br />highest mass
+            </div>
+            <div class="grid-item"></div>
+            <div class="grid-item">
+              <span id="stats_timealive" style="font-size: 10px">00:00</span>
+              <br />time alive
+            </div>
+            <div class="grid-item">
+              <span id="stats_leaderboardtime" style="font-size: 10px"
+                >0:00</span
+              >
+              <br />leaderboard time
+            </div>
+            <div class="grid-item"></div>
+            <div class="grid-item">
+              <span id="stats_cellseaten" style="font-size: 10px">0</span>
+              <br />cells eaten
+            </div>
+            <div class="grid-item">
+              <span id="stats_topposition" style="font-size: 10px">:(</span>
+              <br />top position
+            </div>
+            <div class="grid-item"></div>
+          </div>
+          <button
+            id="infoDialog_continueBtn"
+            onclick="document.getElementById('infoOverlays').hide(1.0);document.getElementById('main-login-section').show(0.2);return false;"
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+    <script
+      type="text/javascript"
+      src="static/js/game3.js"
+    ></script>
+    <script>
+      function openModal() {
+        document.getElementById("settingsModal").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("settingsModal").classList.add("hidden");
+      }
+
+      function toggleDropdown() {
+        const dropdown = document.getElementById("gamemode");
+        dropdown.classList.toggle("hidden");
+      }
+      // Create stars
+      function createStars() {
+        const starsContainer = document.getElementById("stars");
+        for (let i = 0; i < 200; i++) {
+          // Increased number of stars to 200
+          const star = document.createElement("div");
+          star.classList.add("star");
+          star.style.top = `${Math.random() * 100}vh`;
+          star.style.left = `${Math.random() * 100}vw`;
+          star.style.animationDuration = `${Math.random() * 10 + 5}s`;
+          starsContainer.appendChild(star);
+        }
+      }
+
+      function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(
+            " border-blue-500",
+            ""
+          );
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " border-blue-500";
+      }
+
+      // Open the default tab
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector(".tab-button").click();
+      });
+      setTimeout(() => {
+        document.getElementById("loadingOverlay").style.display = "none";
+        document
+          .getElementById("main-login-section")
+          .classList.remove("hidden");
+        document.getElementById("in-game").classList.remove("hidden");
+      }, 8000);
+
+      function handleHelpers() {
+        const button = document.getElementById("createButton");
+        button.disabled = true;
+        button.innerText = "Full Map (Active)";
+        button.classList.remove("bg-white", "dark:bg-gray-800");
+        button.classList.add("bg-green-500", "dark:bg-green-700");
+        window.create();
+      }
+      createStars();
+    </script>
+  </body>
+</html>
