@@ -162,6 +162,6 @@
     };
 
     // Load the bundle
-    loadFromCDN(); // Use CDN (production) - Change to loadFromLocalhost() for development
+    loadFromLocalhost(); // TESTING - Use localhost for debugging
 
 })();
