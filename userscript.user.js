@@ -38,7 +38,8 @@
     // Method 2: Load from CDN (for production)
     const loadFromCDN = () => {
         const script = document.createElement('script');
-        script.src = 'YOUR_CDN_URL/bundle.js'; // Update this with your CDN URL
+        // jsDelivr CDN - automatically serves from GitHub
+        script.src = 'https://cdn.jsdelivr.net/gh/myweorld/ab@main/bundle.js';
         script.onload = () => {
             console.log('[Userscript] Bundle loaded from CDN');
             // Wait a bit for bundle to execute
@@ -161,6 +162,6 @@
     };
 
     // Load the bundle
-    loadFromLocalhost(); // Change to loadFromCDN() for production
+    loadFromCDN(); // Use CDN (production) - Change to loadFromLocalhost() for development
 
 })();
